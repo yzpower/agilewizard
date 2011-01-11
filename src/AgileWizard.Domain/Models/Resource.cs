@@ -25,6 +25,7 @@ namespace AgileWizard.Domain.Models
 
         public class ResourceTag
         {
+            public string Id { get; set; }
             public string Name { get; set; }
         }
 

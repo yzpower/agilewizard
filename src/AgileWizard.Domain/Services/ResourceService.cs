@@ -9,15 +9,22 @@ namespace AgileWizard.Domain.Services
     {
         private IResourceRepository _repository;
 
-        public ResourceService(IResourceRepository repository)
+        private ITagRepository _tagRepository;
+
+        public ResourceService(IResourceRepository repository, ITagRepository tagRepository)
         {
             _repository = repository;
+            _tagRepository = tagRepository;
         }
 
         public Resource AddResource(Resource source)
         {
             var resource = _repository.Add(source);
+
+            _tagRepository.AddOrUpdateTagList(source.Id, source.Tags);
+            
             _repository.Save();
+
             return resource;
         }
 
@@ -39,6 +46,9 @@ namespace AgileWizard.Domain.Services
         public void UpdateResource(string id, Resource resource)
         {
             var resourceUpdate = _repository.GetResourceById(id);
+
+            var existingTags = resourceUpdate.Tags;
+
             resourceUpdate.Title = resource.Title;
             resourceUpdate.Content = resource.Content;
             resourceUpdate.LastUpdateTime = DateTime.Now;
@@ -46,6 +56,10 @@ namespace AgileWizard.Domain.Services
             resourceUpdate.SubmitUser = resource.SubmitUser;
             resourceUpdate.ReferenceUrl = resource.ReferenceUrl;
             resourceUpdate.Tags = resource.Tags;
+
+            _tagRepository.RemoveTagList(resourceUpdate.Id, existingTags);
+            _tagRepository.AddOrUpdateTagList(resourceUpdate.Id, resource.Tags);
+            
             _repository.Save();
 
         }
