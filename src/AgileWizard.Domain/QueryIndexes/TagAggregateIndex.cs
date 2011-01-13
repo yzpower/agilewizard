@@ -19,18 +19,18 @@ namespace AgileWizard.Domain.QueryIndexes
                                    select new
                                    {
                                        Name = tag.Name.ToLower(),
-                                       ShortTicks = resource.ShortTicks,
+                                       LastUpdateTime = resource.LastUpdateTime,
                                    },
 
                 Reduce = items => from item in items
                                   group item by item.Name into g
-                                  let shortTicks = g.Max(x => x.ShortTicks)
+                                  let lastUpdateTime = g.Max(x => x.LastUpdateTime)
                                   let totalCount = g.Count()
                                   select new
                                   {
                                       Name = g.Key,
                                       TotalCount = totalCount,
-                                      ShortTicks = shortTicks,
+                                      LastUpdateTime = lastUpdateTime,
                                   },
 
             }.ToIndexDefinition(DocumentStore.Conventions);

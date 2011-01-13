@@ -20,8 +20,7 @@ namespace AgileWizard.Domain.Repositories
         public List<Tag> GetTagList(int maxCount)
         {
             var query = _documentSession.Query<Tag>(typeof(TagAggregateIndex).Name);
-            return query.OrderByDescending(x=>x.ShortTicks)
-                .Take(maxCount)
+            return query.Take(maxCount)
                 .ToList();
         }
     }
